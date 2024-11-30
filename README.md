@@ -1,6 +1,6 @@
 # Early fault tolerant quantum algorithms in practice
  
-This is the code for the paper arXiv:2405.03754. 
+This is the code for the paper [arXiv:2405.03754](https://arxiv.org/abs/2405.03754). 
 
 # Initial state
 
@@ -13,7 +13,7 @@ The second part of the algorithm is to compute the Fourier moments of the target
 # Lin and Tong algorithm
 
 The bulk of the algorithm can be run using the main.py file which compute the Fourier decomposition (in the algorithms/Fk.py script), sample from the Fourier moments and build the estimator.
-![plot](results/ACDF_0.pdf)
+![plot](results/ACDF_10.pdf)
 # Step detection
 
 The steps are automatically detected within the main script through the algorithms/trendfliter.py file. 
