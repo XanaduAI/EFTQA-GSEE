@@ -16,7 +16,9 @@ The bulk of the algorithm can be run using the main.py file which compute the Fo
 ![plot](results/ACDF26_10.pdf)
 # Step detection
 
-The steps are automatically detected within the main script through the algorithms/trendfliter.py file. 
+The steps are automatically detected within the main script through the algorithms/trendfliter.py file.  The step detection is better illustared in the notebook `resources_comparison.ipynb`, which estimnate the number of samples required to detect a step of a given size. 
+
+![image](results/resources_comparison.png)
 
 # How to cite 
 
