@@ -8,15 +8,17 @@ The first step is to compute the initial state. This can be done with DMRG in th
 
 # Dynamics
 
-The second part of the algorithm is to compute the Fourier moments of the target Hamiltonian $\langle \psi| e^{-iH\tau j}|\psi\rangle$. This can be done with the dyncamic.py script, which relies on [qsimcirq](https://quantumai.google/qsim/tutorials/qsimcirq). In this script we consider the fully connected Heisenberg model and the evolution is performed with Trotterization via a swap network. 
+The second part of the algorithm is to compute the Fourier moments of the target Hamiltonian $\langle \psi| e^{-iH\tau j}|\psi\rangle$. This can be done with `dynamics_pl.py` and `dyncamics_qsim.py` scripts, which rely on [pennylane](https://docs.pennylane.ai/en/stable/) and [qsimcirq](https://quantumai.google/qsim/tutorials/qsimcirq), respectively. In these scripts we consider the fully connected Heisenberg model and the evolution is performed with Trotterization via a swap network. The latter also supports GPU execution.
 
 # Lin and Tong algorithm
 
-The bulk of the algorithm can be run using the main.py file which computes the Fourier decomposition (in the algorithms/Fk.py script), samples from the Fourier moments, and builds the estimator. The CDF for 26 spins fully connected Hamiltonian using low-bond dimension initial is displayed below. 
+The bulk of the algorithm can be run using the `main.py`, which computes the Fourier decomposition (present in the `algorithms/Fk.py`), samples from the Fourier moments, and builds the estimator. The CDF for 26 spins fully connected Hamiltonian using low-bond dimension initial is displayed below.
+
 ![plot](results/ACDF26_10.jpg)
+
 # Step detection
 
-The steps are automatically detected within the main script through the algorithms/trendfliter.py file.  The step detection is better illustrated in the notebook `resources_comparison.ipynb`, which estimates the number of samples required to detect a step of a given size. 
+The steps are automatically detected within the main script through the `algorithms/trendfliter.py`.  The step detection is better illustrated in the notebook `resources_comparison.ipynb`, which estimates the number of samples required to detect a step of a given size. 
 
 ![image](results/resources_comparison.png)
 
