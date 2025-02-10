@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+title: "Early Fault-Tolerant Quantum Algorithms in Practice: Application to Ground-State Energy Estimation"
+message: If you use this software, please cite it using these metadata.
+type: software
+authors:
+  - given-names: Oriel
+    family-names: Kiss
+    orcid: "https://orcid.org/0000-0001-7461-3342"
+  - given-names: Utkarsh
+    family-names: Azad
+    orcid: "https://orcid.org/0000-0001-7020-0305"
+  - given-names: Borja
+    family-names: Requena
+  - given-names: Alessandro
+    family-names: Roggero
+  - given-names: David
+    family-names: Wakeham
+  - given-names: Juan Miguel
+    family-names: Arrazola
+identifiers:
+  - type: url
+    value: https://arxiv.org/abs/2405.03754
+    description: Paper's arxiv
+repository-code: https://github.com/XanaduAI/EFTQA-GSEE
+date-released: 2024

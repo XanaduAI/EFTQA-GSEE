@@ -15,9 +15,10 @@ import tqdm
 import cirq
 import qsimcirq
 import GPUtil
-
-from algorithms.tcircuits_LMG import get_tevol_circ
 from qiskit.opflow import X, Z, Y, I
+
+from algorithms.trotter_circs_qsim import get_tevol_circ
+from algorithms.utils import gen_int_list
 
 
 if len(GPUtil.getAvailable()) == 0:
@@ -172,7 +173,7 @@ def main(number, initial_state, num_steps):
             "order": 2,
             "num_steps": num_steps,
             "J": coupling,
-            "neutrino_number": L,
+            "num_spins": L,
             "int_terms": int_terms,
             "labels": labels,
             "qubit_list": qubits,

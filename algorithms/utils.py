@@ -317,3 +317,35 @@ def truncate(ew, n):
     value = 2 * np.pi * decimal / 3 - np.pi / 3
     #     print(binary,value)
     return value
+
+def gen_int_list(num_nu, sij_mat):
+    """Generate a list of interaction terms, their one-norm, and their relative weights.
+
+    Args:
+        num_nu (int): The number of elements to consider for generating interaction terms.
+        sij_mat (numpy.ndarray): A 2-D matrix containing interaction values between elements.
+
+    Returns:
+        tuple: A tuple containing:
+            - int_terms (List[dict]): A list of dictionaries where each item represents an
+                interaction term with keys:
+                - "sui" (int): The index of the first element in the interaction.
+                - "suj" (int): The index of the second element in the interaction.
+                - "hij" (float): The interaction value between the two elements.
+            - int_1norm (float): The one-norm of the interaction values.
+            - int_prob (numpy.ndarray): An array of relative weights of the interaction terms.
+    """
+    # populate interaction terms
+    int_terms = []
+    for ii in range(num_nu):
+        for jj in range(num_nu):
+            if jj<=ii:
+                continue
+            pair_ij = {"sui": ii, "suj": jj, "hij": vij_mat[ii,jj]}
+            int_terms.append(pair_ij)
+
+    # calculate one-norm and relative weigth
+    int_1norm = np.sum([pp["hij"] for pp in int_terms])
+    int_prob = np.array([pp["hij"]/int_1norm for pp in int_terms])
+
+    return int_terms, int_1norm, int_prob
