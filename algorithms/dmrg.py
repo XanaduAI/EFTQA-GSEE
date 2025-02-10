@@ -5,6 +5,7 @@ Paper: arXiv:2405.03754
 Year: 2024
 Description: This module provides functions to perform DMRG calculations for a spin-1/2 XXZ chain.
 """
+
 import numpy as np
 from tenpy.networks.site import SpinSite, SpinHalfSite
 from tenpy.models.lattice import Chain, Square
@@ -90,7 +91,6 @@ class XXZChain(SpinModel):
             np.random.seed(42)
             J = np.random.normal(0, 1, size=3 * dim).reshape(3, dim) / L
 
-
             lat = Chain(L, site, bc=bc, bc_MPS=bc_MPS)
 
             CouplingModel.__init__(self, lat)
@@ -116,11 +116,9 @@ if __name__ == "__main__":
     Jx = -1
     Jz = 1
 
-
     np.random.seed(42)
     field = -np.random.uniform(-1, 1, size=(n, m))
     # field = np.ones_like(field)
-
 
     params = {"n": n, "m": m, "Jxx": Jx, "Jz": Jz, "hz": field}
     model = XXZChain(params)
@@ -129,7 +127,6 @@ if __name__ == "__main__":
 
     # Create a SpinSite
     # Define the parameters of the model
-
 
     product_state = []
     for i in range(n * m):
@@ -141,7 +138,6 @@ if __name__ == "__main__":
             product_state.append("down")
 
     product_state = ["up", "down"] * int(((n * m) / 2))
-
 
     psi = MPS.from_product_state(sites, product_state, "finite")
 
@@ -188,6 +184,5 @@ if __name__ == "__main__":
         # params['orthogonal_to'] = [psi]
         # results = dmrg.run(psi, model, params)
         # print(results['E'])
-
 
     np.save("data/energies_dmrg_qc_{}_{}_{}.npy".format(n * m, Jx, Jz), energies)

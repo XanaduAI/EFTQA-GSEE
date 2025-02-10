@@ -5,6 +5,7 @@ Paper: arXiv:2405.03754
 Year: 2024
 Description: This module contains utility functions for filering and detecting change points in time series data.
 """
+
 import numpy as np
 import ruptures as rpt
 import scipy
@@ -135,9 +136,9 @@ def check_stat_relevant(acdf, bkp):
         float: The F-statistic value.
 
     Developer Notes:
-        The function computes the F-statistic to test the significance of the 
-        difference between the means of two segments of the time series data 
-        divided at the breakpoint. The F-statistic is calculated as the ratio 
+        The function computes the F-statistic to test the significance of the
+        difference between the means of two segments of the time series data
+        divided at the breakpoint. The F-statistic is calculated as the ratio
         of the mean square between the groups to the mean square within the groups.
     """
 
@@ -185,12 +186,12 @@ def large_variance(acdf, v, s=3, size=(6, 10)):
         acdf (numpy.ndarray): The approximate cumulative distribution data as a time series.
         v (float): The variance threshold.
         s (int, optional): The scaling factor for the variance threshold. Default is 3.
-        size (tuple, optional): A tuple containing two integers. The first integer is the minimum number of elements 
-                                that must exceed the threshold, and the second integer is the window size to check. 
+        size (tuple, optional): A tuple containing two integers. The first integer is the minimum number of elements
+                                that must exceed the threshold, and the second integer is the window size to check.
                                 Default is (6, 10).
 
     Returns:
-        int: The index of the first element where the variance exceeds the threshold. If no such element is found, 
+        int: The index of the first element where the variance exceeds the threshold. If no such element is found,
             returns the last index of the array.
     """
     for a in range(len(acdf)):
@@ -224,7 +225,7 @@ def compute_d(tau, epsilon):
     """Compute the value of 'd' based on the given 'tau' and 'epsilon' parameters.
 
     The function calculates 'd' using the formula:
-    
+
     .. math::
         d = sqrt(2) / (tau * epsilon) * log(2 * sqrt(2 * pi) * (1 + 2 / epsilon))
 
@@ -318,6 +319,7 @@ def truncate(ew, n):
     #     print(binary,value)
     return value
 
+
 def gen_int_list(num_nu, sij_mat):
     """Generate a list of interaction terms, their one-norm, and their relative weights.
 
@@ -339,13 +341,13 @@ def gen_int_list(num_nu, sij_mat):
     int_terms = []
     for ii in range(num_nu):
         for jj in range(num_nu):
-            if jj<=ii:
+            if jj <= ii:
                 continue
-            pair_ij = {"sui": ii, "suj": jj, "hij": vij_mat[ii,jj]}
+            pair_ij = {"sui": ii, "suj": jj, "hij": vij_mat[ii, jj]}
             int_terms.append(pair_ij)
 
     # calculate one-norm and relative weigth
     int_1norm = np.sum([pp["hij"] for pp in int_terms])
-    int_prob = np.array([pp["hij"]/int_1norm for pp in int_terms])
+    int_prob = np.array([pp["hij"] / int_1norm for pp in int_terms])
 
     return int_terms, int_1norm, int_prob

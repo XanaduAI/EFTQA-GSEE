@@ -195,7 +195,7 @@ def get_obj_func_model(y, y_err=None, positive=False, linear_deviations=None):
 
     Args:
         y (numpy.ndarray): The y variable, a numpy array.
-        y_err (numpy.ndarray, optional): The y_err variable, a numpy array. 
+        y_err (numpy.ndarray, optional): The y_err variable, a numpy array.
             Defaults to None, which sets it to an array of ones.
         positive (bool, optional): If set to True, will result in an always positive base model.
             Defaults to False.

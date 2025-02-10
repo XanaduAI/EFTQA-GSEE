@@ -6,6 +6,7 @@ Year: 2024
 Description: This module provides functions to compute the Fourier coefficients of the
 Heaviside function and to calculate the beta value based on given epsilon and delta.
 """
+
 import numpy as np
 import scipy as sp
 
