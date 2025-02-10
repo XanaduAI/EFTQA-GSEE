@@ -5,12 +5,9 @@ Paper: arXiv:2405.03754
 Year: 2024
 Description: This module contains functions to construct cirq circuits for simulating the Hamiltonian systems.
 """
-
-import os
 import cirq
 import numpy as np
 from scipy.linalg import expm
-from algorithms.state_preparation import apply_field, apply_coupling
 
 px = np.array([[0.0, 1.0], [1.0, 0.0]])
 py = np.array([[0.0, -1.0j], [1.0j, 0.0]])
@@ -22,7 +19,20 @@ pzpz = np.kron(pz, pz)
 
 
 def spin_lattice_circuit(coupling, field, dt, num_steps, order, paulis_coupling, qubits):
+    """Simulates the evolution of a spin lattice system using a quantum circuit.
 
+    Args:
+        coupling (list or array): Coupling constants for the spin interactions.
+        field (array): External field applied to the spins.
+        wf (array): Initial wavefunction of the system.
+        dt (float): Time step for the simulation.
+        num_steps (int): Number of time steps to simulate.
+        order (int): Order of the Trotter-Suzuki decomposition.
+        paulis_coupling (list): List of Pauli operators for the coupling terms.
+
+    Returns:
+        array: Final wavefunction of the system after evolution.
+    """
     n, m = np.shape(field)
     field = field.reshape(-1)
     observable = cirq.Z(qubits[-1])
@@ -47,17 +57,30 @@ def spin_lattice_circuit(coupling, field, dt, num_steps, order, paulis_coupling,
 
 
 def apply_field(circuit, qubits, field, dt):
+    """Applies a time-evolved field to a set of qubits.
 
-    for i in range(len(field)):
-        one_u = expm(-1.0j * dt * field[i] * pz)
-        g1 = cirq.MatrixGate(one_u, name="Z")
-        circuit.append(g1.on(qubits[i]))
+    Args:
+        qubits (list[int]): List of qubit indices to which the field is applied.
+        field (list[float]): List of field values corresponding to each qubit.
+        dt (float): Time step for the evolution.
+    """
+    for i, field_value in enumerate(field):
+        one_u = expm(-1.0j * dt * field_value * pz)
+        matrix_gate_z = cirq.MatrixGate(one_u, name="Z")
+        circuit.append(matrix_gate_z.on(qubits[i]))
 
     return circuit
 
 
 def apply_coupling(circuit, qubits, g2, paulis_coupling):
+    """Apply a coupling operation to a set of qubits using a specified unitary matrix.
 
+    Args:
+        qubits (list[int]): List of qubit indices to which the coupling operation will be applied.
+        g2 (array): Unitary matrix representing the coupling operation.
+        paulis_coupling (list[tuple[int, int]]): List of tuples, where each tuple contains two qubit indices
+                                                 indicating the qubits to which the unitary matrix will be applied.
+    """
     for p in paulis_coupling:
         circuit.append(g2.on(qubits[p[0]], qubits[p[1]]))
 
