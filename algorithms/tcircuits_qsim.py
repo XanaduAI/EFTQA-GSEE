@@ -1,5 +1,9 @@
 """
-This module contains functions to create quantum circuits for spin lattice simulations.
+Title: Early Fault-Tolerant Quantum Algorithms in Practice: Application to Ground-State Energy Est.
+Authors: O. Kiss, U. Azad, B. Requena, A. Roggero, D. Wakeham, J. M. Arrazola
+Paper: arXiv:2405.03754 
+Year: 2024
+Description: This module contains functions to construct cirq circuits for simulating the Hamiltonian systems.
 """
 
 import os

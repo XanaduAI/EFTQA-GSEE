@@ -141,7 +141,6 @@ def main(number, initial_state, num_steps):
     print("d :", d, min(d, 20000))
     d = min(d, 20000)
 
-    order = 2
     time_interval = tau * np.arange(1, 2 * int(d) + 1, 2)
 
     if num_steps == 0:
@@ -155,8 +154,8 @@ def main(number, initial_state, num_steps):
 
         res = exact_dynamics(wf.copy(), ew, ev, time_interval)
         results = np.array([res.real, res.imag])
-
         np.save("results/{}/ew.npy".format(number), ew)
+
     else:
         # Trotter
         qubits = cirq.LineQubit.range(L)
@@ -166,11 +165,10 @@ def main(number, initial_state, num_steps):
         wf_initial = wf.copy()
 
         vij = coupling
-        int_terms, int_1norm, int_prob = gen_int_list(L, vij)
+        int_terms, _, _ = gen_int_list(L, vij)
 
         circ_params = {
             "dt": 0,
-            "order": 2,
             "num_steps": num_steps,
             "J": coupling,
             "num_spins": L,
@@ -183,9 +181,6 @@ def main(number, initial_state, num_steps):
 
         results = np.zeros((2, len(time_interval)))
 
-        tt_time = []
-        total = 0
-
         full_circuit = get_tevol_circ(circ_params)
         res = qsim_simulator.simulate_expectation_values(
             full_circuit, observables=H_cirq, initial_state=wf.copy()
@@ -194,23 +189,15 @@ def main(number, initial_state, num_steps):
         print("initial_state energy: ", res)
         np.savetxt(f"results/{number}/is_energy.txt", np.array(res).reshape(-1))
 
-        for _, tt in tqdm.tqdm(enumerate(time_interval)):
-            if _ == 0:
-                dt = tau
-            else:
-                dt = 2 * tau
-
-            dt = dt / num_steps
-            circ_params["dt"] = dt
-
+        for tx in tqdm.tqdm(range(d)):
+            circ_params["dt"] = 2 ** min(1, tx) / num_steps
             full_circuit = get_tevol_circ(circ_params)
-
             res = qsim_simulator.simulate(full_circuit, initial_state=wf.copy())
 
             wf = res.final_state_vector
             overlap = np.dot(wf, wf_initial.conjugate().transpose())
-            results[0, _] = overlap.real
-            results[1, _] = overlap.imag
+            results[0, tx] = overlap.real
+            results[1, tx] = overlap.imag
 
     np.save(f"results/{number}/moments_{initial_state}_{num_steps}.npy", results)
     np.save(f"results/{number}/tau.npy", tau)

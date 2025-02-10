@@ -14,7 +14,8 @@ import tqdm
 
 import pennylane as qml
 
-from algorithms.trotter_circs_pl import spin_lattice_circuit
+from algorithms.trotter_circs_pl import get_tevol_circ
+from algorithms.utils import gen_int_list
 
 
 def Hamiltonian(coupling, field):
@@ -114,12 +115,11 @@ def execute(number, initial_state, num_steps):
     # norm = np.sum(np.absolute(field)) + (2*abs(Jx)+abs(Jz))*len(edges)
     # norm = scipy.sparse.linalg.norm(ham, ord = 1)
     # norm = np.linalg.norm(ham,ord=2)
-    print("norm {}".format(norm))
+    print(f"norm {norm}")
 
     tau = np.pi / (2 * norm)
     print("tau:", tau)
 
-    order = 1
     epsilon = 10**-2
 
     d = (
@@ -139,25 +139,57 @@ def execute(number, initial_state, num_steps):
         res = exact_dynamics(wf, ew, ev, time_interval)
         results = np.array([res.real, res.imag])
 
-        np.save("results/{}/ew.npy".format(number), ew)
+        np.save(f"results/{number}/ew.npy", ew)
     else:
-        wf_initial = wf.copy()
-        results = np.zeros((2, len(time_interval)))
-        for _, tt in tqdm.tqdm(enumerate(time_interval)):
-            dt = tt / num_steps
-            dt = time_interval[1] / num_steps
 
-            wf = spin_lattice_circuit(
-                coupling, field, wf.copy(), dt.copy(), num_steps, order, edges
+        # Trotter
+        L = n * m
+        qubits = qml.wires.Wires(range(L))
+        labels = np.arange(L)
+
+        wf = np.array(wf, dtype="complex64")
+        wf_initial = wf.copy()
+
+        vij = coupling
+        int_terms, _, _ = gen_int_list(L, vij)
+
+        circ_params = {
+            "dt": 0,
+            "num_steps": num_steps,
+            "J": coupling,
+            "num_spins": L,
+            "int_terms": int_terms,
+            "labels": labels,
+            "qubit_list": qubits,
+            "echo": False,
+            "verbose": False,
+        }
+
+        dev = qml.device("lightning.qubit", wires=L)
+        full_qscript = qml.QuantumScript(
+            [qml.StatePrep(wf_initial, wires=qubits), *get_tevol_circ(circ_params)],
+            [qml.expval(Ham)],
+        )
+        res = qml.execute(full_qscript, dev, diff_method=None)
+        print(f"initial_state energy: {res}")
+        np.savetxt(f"results/{number}/is_energy.txt", np.array(res).reshape(-1))
+
+        results = np.zeros((2, len(time_interval)))
+        for tx in tqdm.tqdm(range(d)):
+            circ_params["dt"] = 2 ** min(1, tx) / num_steps
+
+            full_qscript = qml.QuantumScript(
+                [qml.StatePrep(wf, wires=qubits), *get_tevol_circ(circ_params)],
+                [qml.state()],
             )
 
+            wf = qml.execute(full_qscript, dev, diff_method=None)
             overlap = np.dot(wf.conjugate().transpose(), wf_initial)
+            results[0, tx] = float(overlap.real)
+            results[1, tx] = float(overlap.imag)
 
-            results[0, _] = float(overlap.real)
-            results[1, _] = float(overlap.imag)
-
-    np.save("results/{}/moments_{}_{}.npy".format(number, initial_state, num_steps), results)
-    np.save("results/{}/tau.npy".format(number), tau)
+    np.save(f"results/{number}/moments_{initial_state}_{num_steps}.npy", results)
+    np.save(f"results/{number}/tau.npy", tau)
 
 
 if __name__ == "__main__":
