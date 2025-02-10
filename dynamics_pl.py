@@ -86,9 +86,9 @@ def execute(number, initial_state, num_steps):
     coupling = -np.array(([Jx, Jx, Jz]))
 
     if initial_state[:4] == "dmrg":
-        initial_state += "_{}_{}_{}".format(n * m, Jx, Jz)
+        initial_state += f"_{n * m}_{Jx}_{Jz}"
 
-    wf = np.load("data/{}.npy".format(initial_state))
+    wf = np.load(f"data/{initial_state}.npy")
 
     # For random initial state:
     # wf = np.random.uniform(-1, 1, size = (2**(n*m)))
