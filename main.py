@@ -25,6 +25,14 @@ from algorithms.Fk import get_F, get_beta
 
 
 def main(number, initial_state, model, step):
+    """Main function to perform energy calculations and analysis.
+
+    Args:
+        number (int): Identifier for the results directory.
+        initial_state (int): Initial state identifier to load the initial state.
+        model (int): Model identifier used to load specific energy data.
+        step (int): Step value used in file naming for saving results.
+    """
     initial_state += model
     energies_dmrg = np.load(f"data/energies_dmrg_qc{model}.npy")
     print(energies_dmrg)
